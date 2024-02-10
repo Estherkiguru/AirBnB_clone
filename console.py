@@ -109,6 +109,35 @@ class HBNBCommand(cmd.Cmd):
                     return
             print("** no instance found **")
 
+    def do_update(self, arg):
+        """
+        Updates instances based on cass name and id
+        Usage:Update <class_name> <id> <attribute_name> "<attribute_value>"
+        """
+        cmd_args = list(arg.split(" "))
+        # Verify the validity of the class_name argument
+        cls_name = HBNBCommand.__check_args(cmd_args[0])
+        if cls_name:
+            if len(cmd_args) < 2:
+                print("** instance id missing **")
+            elif len(cmd_args) < 3:
+                print("** attribute name missing **")
+            elif len(cmd_args) < 4:
+                print("** value missing **")
+            elif len(cmd_args) > 3:
+                # Extract the saved existing instances
+                all_objects = storage.all()
+                # Parse that dictionary to get the exact instance by id
+                for key, obj in all_objects.items():
+                    obj_id = key.split(".")[1]
+                    if cmd_args[1] == obj_id:
+                # Update the actual instance dictionary
+                        setattr(obj, cmd_args[2], cmd_args[3])
+                # Save the changes
+                        obj.save()
+                        return
+                print("** no instance found **")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
