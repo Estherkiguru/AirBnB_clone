@@ -68,6 +68,25 @@ class HBNBCommand(cmd.Cmd):
                     print(obj)  #: Will implicitly call the dunder str
                     return
             print("** no instance found **")
+
+    def do_all(self, arg):
+        """
+        Prints string representation of all instances
+        """
+        all_objects = storage.all()
+        cmd_args = list(arg.split(" "))
+        obj_list = []
+        if len(cmd_args) == 0:
+            for key, value in all_objects.items():
+                obj_list.append(str(value))
+            print(obj_list)
+        elif cmd_args[0] not in self.valid_classes:
+            print("** class doesn't exist **")
+        else:
+            for key, value in all_objects.items():
+                if key.split(".")[0] == cmd_args[0]:
+                    obj_list.append(str(value))
+            print(obj_list)
             
     def do_destroy(self, arg):
         """
