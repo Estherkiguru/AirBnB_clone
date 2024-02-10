@@ -68,7 +68,27 @@ class HBNBCommand(cmd.Cmd):
                     print(obj)  #: Will implicitly call the dunder str
                     return
             print("** no instance found **")
-  
+            
+    def do_destroy(self, arg):
+        """
+        Handles deletion of an instance
+        Changes saved to JSON file
+        Usage: (hbnb) destroy <class_name> <object_id>
+        """
+        cmd_args = list(arg.split(" "))
+        cls_name = HBNBCommand.__check_args(cmd_args[0])
+        if cls_name and len(cmd_args) < 2:
+            print("** instance id missing **")
+        elif cls_name:
+            all_objects = storage.all()
+            ll_objects = storage.all()
+            for key, obj in all_objects.items():
+                name, obj_id = key.split(".")
+                if obj_id == cmd_args[1]:
+                    del all_objects[key]
+                    storage.save()
+                    return
+            print("** no instance found **")
 
 
 if __name__ == '__main__':
