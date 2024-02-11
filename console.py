@@ -3,6 +3,7 @@
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -17,7 +18,7 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program\n"""
         print()
         return True
-    
+
     def emptyline(self):
         """Handles an empty line input\n"""
         pass
@@ -50,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
             new_instance = cls_name()
             new_instance.save()
             print(new_instance.id)
-        
+
     def do_show(self, arg):
         """
         print string representation of an instance
@@ -73,21 +74,26 @@ class HBNBCommand(cmd.Cmd):
         """
         Prints string representation of all instances
         """
-        all_objects = storage.all()
-        cmd_args = list(arg.split(" "))
-        obj_list = []
-        if len(cmd_args) == 0:
-            for key, value in all_objects.items():
-                obj_list.append(str(value))
+        if arg:  #: Case of the argument -> (hbnb) all <class_name>
+            try:
+                cls_name = globals()[arg]
+                print(cls_name)
+                all_objects = storage.all()
+                obj_list = []
+                for key, obj in all_objects.items():
+                    name = key.split(".")[0]  #: Get class_name from id
+                    if arg == name:
+                        obj_list.append(str(obj))
+                print(obj_list)
+            except KeyError:
+                print("** class doesn't exist **")
+        else:  #: Case of the command -> (hbnb) all
+            all_objects = storage.all()
+            obj_list = []
+            for obj in all_objects.values():
+                obj_list.append(str(obj))
             print(obj_list)
-        elif cmd_args[0] not in self.valid_classes:
-            print("** class doesn't exist **")
-        else:
-            for key, value in all_objects.items():
-                if key.split(".")[0] == cmd_args[0]:
-                    obj_list.append(str(value))
-            print(obj_list)
-            
+
     def do_destroy(self, arg):
         """
         Handles deletion of an instance
@@ -131,9 +137,9 @@ class HBNBCommand(cmd.Cmd):
                 for key, obj in all_objects.items():
                     obj_id = key.split(".")[1]
                     if cmd_args[1] == obj_id:
-                # Update the actual instance dictionary
+                        # Update the actual instance dictionary
                         setattr(obj, cmd_args[2], cmd_args[3])
-                # Save the changes
+                        # Save the changes
                         obj.save()
                         return
                 print("** no instance found **")
