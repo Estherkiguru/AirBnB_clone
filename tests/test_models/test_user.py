@@ -20,9 +20,6 @@ class TestUser(unittest.TestCase):
         u2 = User()
         u2_dict = u2.to_dict()
         self.assertTrue(len(u2_dict) == 4)
-        
-
-
 
 
 if __name__ == "__main__":
