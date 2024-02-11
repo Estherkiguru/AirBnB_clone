@@ -35,7 +35,7 @@ class HBNBCommand(cmd.Cmd):
         arguments passed
         Returns: classname
         """
-        if arg is None:
+        if len(arg) == 0:
             print("** class name missing **")
             return None
         try:
@@ -82,7 +82,6 @@ class HBNBCommand(cmd.Cmd):
         if arg:  #: Case of the argument -> (hbnb) all <class_name>
             try:
                 cls_name = globals()[arg]
-                print(cls_name)
                 all_objects = storage.all()
                 obj_list = []
                 for key, obj in all_objects.items():
